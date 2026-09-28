@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block titulo %}Meus Hábitos{% endblock %}
+
+{#
+  Tela principal (RF02 / RF03 / RF04).
+  A variável "habitos" vem da rota index() do app.py.
+#}
+
+{% block conteudo %}
+
+    <header class="cabecalho">
+        <p class="cabecalho__data">
+            {{ ["Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"][hoje.weekday()] }},
+            {{ hoje.strftime("%d/%m") }}
+        </p>
+        <h1 class="cabecalho__saudacao">Meus Hábitos</h1>
+        <p class="cabecalho__subtitulo">Um dia de cada vez.</p>
+    </header>
+
+    {% if habitos %}
+
+        <ul class="lista">
+            {% for habito in habitos %}
+                <li class="card">
+
+                    <!-- ícone: a primeira letra do nome do hábito -->
+                    <div class="card__icone">{{ habito.inicial }}</div>
+
+                    <div class="card__texto">
+                        <a class="card__nome" href="{{ url_for('historico', habito_id=habito.id) }}">
+                            {{ habito.nome }}
+                        </a>
+                        <p class="card__descricao">{{ habito.descricao }}</p>
+
+                        <!-- US05: um pontinho por dia da semana atual -->
+                        <div class="pontos" title="Progresso da semana">
+                            {% for dia in habito.semana %}
+                                <span class="ponto ponto--{{ dia.estado }}" title="{{ dia.nome }}">
+                                    <i>{{ dia.sigla }}</i>
+                                </span>
+                            {% endfor %}
+                        </div>
+
+                        <!-- RF04: proporção de dias concluídos na semana -->
+                        <p class="card__progresso">
+                            {{ habito.feitos_na_semana }}/7 dias — {{ habito.porcentagem_semana }}%
+                        </p>
+                    </div>
+
+                    {#
+                      RF03: o "checkbox" é um formulário POST.
+                      Se já foi concluído hoje, mostramos a caixa preenchida
+                      e desativada (RN01: não dá nem para tentar de novo).
+                    #}
+                    {% if habito.concluido_hoje %}
+                        <span class="checkbox checkbox--marcado" title="Concluído hoje">✓</span>
+                    {% else %}
+                        <form method="post" action="{{ url_for('concluir', habito_id=habito.id) }}">
+                            <button type="submit" class="checkbox" title="Marcar como concluído hoje">
+                                <span class="sr-only">Concluir {{ habito.nome }}</span>
+                            </button>
+                        </form>
+                    {% endif %}
+
+                </li>
+            {% endfor %}
+        </ul>
+
+    {% else %}
+
+        {# Critério da US02: estado vazio #}
+        <div class="vazio">
+            <p class="vazio__titulo">Nenhum hábito cadastrado ainda</p>
+            <p class="vazio__texto">Toque no botão + para criar o seu primeiro hábito.</p>
+        </div>
+
+    {% endif %}
+
+    <!-- botão "+" para adicionar hábito (RF01) -->
+    <a class="botao-mais" href="{{ url_for('novo_habito') }}" title="Adicionar hábito">+</a>
+
+{% endblock %}

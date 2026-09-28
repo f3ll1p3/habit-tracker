@@ -1,0 +1,15 @@
+# Nunca suba a connection string do Neon para o GitHub
+.env
+
+# Restos do Python
+__pycache__/
+*.pyc
+
+# Banco antigo do SQLite (não é mais usado)
+*.db
+
+# Vercel
+.vercel/
+
+# Configurações locais do editor
+.vscode/

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block titulo %}Novo hábito{% endblock %}
+
+{#
+  Formulário de cadastro (RF01 / US01).
+  Ele envia por POST para a mesma rota /habitos/novo, que grava no banco.
+#}
+
+{% block conteudo %}
+
+    <header class="cabecalho">
+        <a class="voltar" href="{{ url_for('index') }}">← Voltar</a>
+        <h1 class="cabecalho__saudacao">Novo hábito</h1>
+        <p class="cabecalho__subtitulo">O que você quer acompanhar?</p>
+    </header>
+
+    <form class="formulario" method="post" action="{{ url_for('novo_habito') }}">
+
+        <label class="campo">
+            <span class="campo__rotulo">Nome</span>
+            <input class="campo__entrada" type="text" name="nome"
+                   value="{{ nome }}" maxlength="60"
+                   placeholder="Ex.: Beber água" required>
+        </label>
+
+        <label class="campo">
+            <span class="campo__rotulo">Descrição</span>
+            <textarea class="campo__entrada" name="descricao" rows="3"
+                      maxlength="200"
+                      placeholder="Ex.: 2 litros ao longo do dia" required>{{ descricao }}</textarea>
+        </label>
+
+        <button class="botao-principal" type="submit">Salvar hábito</button>
+    </form>
+
+{% endblock %}

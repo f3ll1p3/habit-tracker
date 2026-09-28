@@ -1,0 +1,331 @@
+/* ============================================================
+   Habit Tracker - estilos
+   Paleta aprovada no protótipo:
+     fundo        #EEF2EA
+     verde        #2B4735
+     âmbar (hoje) #D98E3C
+     card         #FDFCF9
+     cinza perdido#C7CFC0
+   ============================================================ */
+
+:root {
+    --fundo: #EEF2EA;
+    --verde: #2B4735;
+    --ambar: #D98E3C;
+    --card: #FDFCF9;
+    --cinza: #C7CFC0;
+    --texto-suave: #6B7A6B;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--fundo);
+    color: var(--verde);
+    font-family: "Work Sans", Arial, sans-serif;
+}
+
+/* container central, largura de "telinha de celular" no desktop */
+.tela {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 32px 20px 120px;
+}
+
+/* ---------- cabeçalho ---------- */
+.cabecalho { margin-bottom: 24px; }
+
+.cabecalho__data {
+    margin: 0 0 6px;
+    font-size: 13px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--texto-suave);
+}
+
+.cabecalho__saudacao {
+    margin: 0;
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 34px;
+    font-weight: 600;
+}
+
+.cabecalho__subtitulo {
+    margin: 4px 0 0;
+    color: var(--texto-suave);
+    font-size: 15px;
+}
+
+.voltar {
+    display: inline-block;
+    margin-bottom: 14px;
+    color: var(--texto-suave);
+    text-decoration: none;
+    font-size: 14px;
+}
+.voltar:hover { color: var(--verde); }
+
+/* ---------- avisos (flash) ---------- */
+.avisos { margin-bottom: 16px; }
+
+.aviso {
+    margin: 0 0 8px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+}
+.aviso--sucesso { background: #DCE7DA; color: var(--verde); }
+.aviso--erro    { background: #F6E3CF; color: #8A5620; }
+
+/* ---------- lista de hábitos ---------- */
+.lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--card);
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(43, 71, 53, .07);
+}
+
+.card__icone {
+    flex: 0 0 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--verde);
+    color: var(--card);
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card__texto { flex: 1; min-width: 0; }
+
+.card__nome {
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--verde);
+    text-decoration: none;
+}
+.card__nome:hover { text-decoration: underline; }
+
+.card__descricao {
+    margin: 2px 0 10px;
+    font-size: 14px;
+    color: var(--texto-suave);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.card__progresso {
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: var(--texto-suave);
+}
+
+/* ---------- pontinhos da semana (US05) ---------- */
+.pontos { display: flex; gap: 8px; }
+
+.ponto {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-style: normal;
+}
+.ponto i { display: none; }              /* a letra só aparece no tamanho grande */
+
+.ponto--concluido { background: var(--verde); }
+.ponto--hoje      { background: var(--ambar); }
+.ponto--perdido   { background: var(--cinza); }
+.ponto--futuro    { background: transparent; border: 1.5px dashed var(--cinza); }
+
+.pontos--grande { gap: 10px; margin: 6px 0 14px; }
+.pontos--grande .ponto {
+    width: 34px;
+    height: 34px;
+    font-size: 12px;
+}
+.pontos--grande .ponto i { display: block; }
+.pontos--grande .ponto--concluido,
+.pontos--grande .ponto--hoje { color: var(--card); }
+.pontos--grande .ponto--perdido,
+.pontos--grande .ponto--futuro { color: var(--texto-suave); }
+
+/* ---------- checkbox de conclusão (RF03) ---------- */
+.checkbox {
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 2px solid var(--cinza);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    padding: 0;
+    transition: background .12s ease, border-color .12s ease;
+}
+.checkbox:hover { border-color: var(--verde); background: #E7EDE4; }
+
+.checkbox--marcado {
+    background: var(--verde);
+    border-color: var(--verde);
+    color: var(--card);
+    cursor: default;
+}
+
+/* texto só para leitores de tela */
+.sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+}
+
+/* ---------- estado vazio (US02) ---------- */
+.vazio {
+    background: var(--card);
+    border: 1.5px dashed var(--cinza);
+    border-radius: 18px;
+    padding: 40px 24px;
+    text-align: center;
+}
+.vazio__titulo {
+    margin: 0 0 6px;
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 19px;
+}
+.vazio__texto { margin: 0; color: var(--texto-suave); font-size: 14px; }
+
+/* ---------- botão "+" ---------- */
+.botao-mais {
+    position: fixed;
+    right: calc(50% - 260px + 20px);
+    bottom: 28px;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: var(--verde);
+    color: var(--card);
+    font-size: 30px;
+    line-height: 54px;
+    text-align: center;
+    text-decoration: none;
+    box-shadow: 0 6px 16px rgba(43, 71, 53, .25);
+}
+.botao-mais:hover { background: #22392A; }
+
+@media (max-width: 560px) {
+    .botao-mais { right: 20px; }
+}
+
+/* ---------- formulário ---------- */
+.formulario {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(43, 71, 53, .07);
+}
+
+.campo { display: block; margin-bottom: 18px; }
+
+.campo__rotulo {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--texto-suave);
+}
+
+.campo__entrada {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--cinza);
+    border-radius: 12px;
+    background: var(--fundo);
+    color: var(--verde);
+    font-family: inherit;
+    font-size: 15px;
+    resize: vertical;
+}
+.campo__entrada:focus {
+    outline: none;
+    border-color: var(--ambar);
+}
+
+.botao-principal {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: var(--verde);
+    color: var(--card);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+}
+.botao-principal:hover { background: #22392A; }
+
+/* ---------- painéis do histórico ---------- */
+.painel {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 8px rgba(43, 71, 53, .07);
+}
+
+.painel__titulo {
+    margin: 0 0 10px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--texto-suave);
+}
+
+.painel__numero {
+    margin: 0;
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 26px;
+}
+
+.painel__nota { margin: 6px 0 0; font-size: 13px; color: var(--texto-suave); }
+
+.datas {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.datas__item {
+    background: var(--fundo);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 13px;
+}

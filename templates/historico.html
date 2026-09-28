@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block titulo %}Histórico de {{ habito.nome }}{% endblock %}
+
+{#
+  Histórico de um hábito (RF04 / US04).
+  A variável "habito" vem da rota historico() do app.py.
+#}
+
+{% block conteudo %}
+
+    <header class="cabecalho">
+        <a class="voltar" href="{{ url_for('index') }}">← Voltar</a>
+        <h1 class="cabecalho__saudacao">{{ habito.nome }}</h1>
+        <p class="cabecalho__subtitulo">{{ habito.descricao }}</p>
+    </header>
+
+    <section class="painel">
+        <h2 class="painel__titulo">Semana atual</h2>
+
+        <div class="pontos pontos--grande">
+            {% for dia in habito.semana %}
+                <span class="ponto ponto--{{ dia.estado }}" title="{{ dia.nome }}">
+                    <i>{{ dia.sigla }}</i>
+                </span>
+            {% endfor %}
+        </div>
+
+        <p class="painel__numero">
+            {{ habito.feitos_na_semana }}/7 dias — {{ habito.porcentagem_semana }}%
+        </p>
+    </section>
+
+    <section class="painel">
+        <h2 class="painel__titulo">Desde o cadastro</h2>
+        <p class="painel__numero">
+            {{ habito.total_concluido }}/{{ habito.dias_desde_o_cadastro }} dias — {{ habito.porcentagem_total }}%
+        </p>
+        <p class="painel__nota">
+            Cadastrado em {{ habito.criado_em.strftime("%d/%m/%Y") }}
+        </p>
+    </section>
+
+    <section class="painel">
+        <h2 class="painel__titulo">Últimas conclusões</h2>
+
+        {% if habito.ultimas_datas %}
+            <ul class="datas">
+                {% for dia in habito.ultimas_datas %}
+                    <li class="datas__item">{{ dia.strftime("%d/%m/%Y") }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="painel__nota">Ainda não há conclusões registradas.</p>
+        {% endif %}
+    </section>
+
+{% endblock %}

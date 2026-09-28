@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<!--
+  base.html - "moldura" usada por todas as páginas.
+  As outras telas escrevem só o miolo dentro do bloco "conteudo".
+-->
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titulo %}Habit Tracker{% endblock %}</title>
+
+    <!-- Fontes do Google: Fraunces (serifada) e Work Sans (sans-serif) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- url_for('static', ...) monta o caminho do CSS dentro da pasta static/ -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main class="tela">
+
+        {# Mensagens rápidas enviadas pelo flash() lá no app.py #}
+        {% with mensagens = get_flashed_messages(with_categories=true) %}
+            {% if mensagens %}
+                <div class="avisos">
+                    {% for categoria, texto in mensagens %}
+                        <p class="aviso aviso--{{ categoria }}">{{ texto }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block conteudo %}{% endblock %}
+
+    </main>
+</body>
+</html>
