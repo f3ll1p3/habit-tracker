@@ -403,22 +403,6 @@ def historico(habito_id):
 
 
 # =====================================================================
-# TEMPORÁRIO - diagnóstico do deploy (REMOVER depois que o site abrir)
-# Mostra qual endereço o Flask recebeu quando nenhuma rota casa.
-# =====================================================================
-
-@app.errorhandler(404)
-def pagina_nao_encontrada(erro):
-    return (
-        "<h1>404 - diagnostico</h1>"
-        f"<p>path recebido pelo Flask: <b>{request.path}</b></p>"
-        f"<p>url completa: {request.url}</p>"
-        f"<p>rotas registradas: {sorted(r.rule for r in app.url_map.iter_rules())}</p>",
-        404,
-    )
-
-
-# =====================================================================
 # INÍCIO DO PROGRAMA
 # =====================================================================
 
