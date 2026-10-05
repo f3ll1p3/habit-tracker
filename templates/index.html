@@ -1,20 +1,36 @@
 {% extends "base.html" %}
+{% from "icones.html" import icone %}
 {% block titulo %}Meus Hábitos{% endblock %}
 
 {#
-  Tela principal (RF02 / RF03 / RF04).
-  A variável "habitos" vem da rota index() do app.py.
+  Aba "Hábitos" - tela principal (RF02 / RF03 / RF04).
+  As variáveis "cabecalho" e "habitos" vêm da rota index() do app.py.
 #}
 
 {% block conteudo %}
 
     <header class="cabecalho">
-        <p class="cabecalho__data">
-            {{ ["Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"][hoje.weekday()] }},
-            {{ hoje.strftime("%d/%m") }}
+        <p class="cabecalho__data">{{ cabecalho.data_extenso }}</p>
+
+        <h1 class="cabecalho__saudacao">
+            {% if cabecalho.nome %}
+                {{ cabecalho.saudacao }}, {{ cabecalho.nome }}
+            {% else %}
+                {{ cabecalho.saudacao }}
+            {% endif %}
+        </h1>
+
+        {# Sequência de dias seguidos com pelo menos um hábito concluído #}
+        <p class="sequencia">
+            <strong>{{ cabecalho.sequencia }}</strong>
+            {% if cabecalho.sequencia == 1 %}dia seguido{% else %}dias seguidos{% endif %}
+            com pelo menos um hábito concluído
         </p>
-        <h1 class="cabecalho__saudacao">Meus Hábitos</h1>
-        <p class="cabecalho__subtitulo">Um dia de cada vez.</p>
+
+        {# Quem ainda não escreveu o nome vê o convite para configurar #}
+        {% if not cabecalho.nome %}
+            <a class="cabecalho__perfil" href="{{ url_for('perfil') }}">Dizer meu nome →</a>
+        {% endif %}
     </header>
 
     {% if habitos %}
@@ -23,8 +39,7 @@
             {% for habito in habitos %}
                 <li class="card">
 
-                    <!-- ícone: a primeira letra do nome do hábito -->
-                    <div class="card__icone">{{ habito.inicial }}</div>
+                    <div class="card__icone">{{ icone(habito.icone, 22) }}</div>
 
                     <div class="card__texto">
                         <a class="card__nome" href="{{ url_for('historico', habito_id=habito.id) }}">
@@ -32,12 +47,30 @@
                         </a>
                         <p class="card__descricao">{{ habito.descricao }}</p>
 
-                        <!-- US05: um pontinho por dia da semana atual -->
-                        <div class="pontos" title="Progresso da semana">
+                        {#
+                          US05: um pontinho por dia da semana atual.
+
+                          Só o pontinho de HOJE é um botão: clicar nele marca
+                          ou desmarca o hábito. Os dias passados são apenas
+                          histórico, por isso saem como <span>, sem clique.
+                        #}
+                        <div class="pontos">
                             {% for dia in habito.semana %}
-                                <span class="ponto ponto--{{ dia.estado }}" title="{{ dia.nome }}">
-                                    <i>{{ dia.sigla }}</i>
-                                </span>
+                                {% if dia.e_hoje %}
+                                    <form method="post" class="pontos__form"
+                                          action="{{ url_for('desmarcar' if dia.concluido else 'concluir', habito_id=habito.id) }}">
+                                        <input type="hidden" name="voltar_para" value="{{ url_for('index') }}">
+                                        <button type="submit"
+                                                class="ponto ponto--{{ dia.estado }} ponto--clicavel"
+                                                title="{{ 'Desmarcar' if dia.concluido else 'Marcar como concluído hoje' }}">
+                                            <i>{{ dia.sigla }}</i>
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <span class="ponto ponto--{{ dia.estado }}" title="{{ dia.nome }}">
+                                        <i>{{ dia.sigla }}</i>
+                                    </span>
+                                {% endif %}
                             {% endfor %}
                         </div>
 
@@ -48,19 +81,26 @@
                     </div>
 
                     {#
-                      RF03: o "checkbox" é um formulário POST.
-                      Se já foi concluído hoje, mostramos a caixa preenchida
-                      e desativada (RN01: não dá nem para tentar de novo).
+                      RF03: o checkbox faz a mesma coisa que o pontinho de hoje.
+                      Marcado -> o clique desmarca. Vazio -> o clique conclui.
                     #}
-                    {% if habito.concluido_hoje %}
-                        <span class="checkbox checkbox--marcado" title="Concluído hoje">✓</span>
-                    {% else %}
-                        <form method="post" action="{{ url_for('concluir', habito_id=habito.id) }}">
-                            <button type="submit" class="checkbox" title="Marcar como concluído hoje">
-                                <span class="sr-only">Concluir {{ habito.nome }}</span>
-                            </button>
-                        </form>
-                    {% endif %}
+                    <form method="post"
+                          action="{{ url_for('desmarcar' if habito.concluido_hoje else 'concluir', habito_id=habito.id) }}">
+                        <input type="hidden" name="voltar_para" value="{{ url_for('index') }}">
+                        <button type="submit"
+                                class="checkbox {% if habito.concluido_hoje %}checkbox--marcado{% endif %}"
+                                title="{{ 'Desmarcar' if habito.concluido_hoje else 'Marcar como concluído hoje' }}">
+                            {% if habito.concluido_hoje %}
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M5 12.5l4.5 4.5L19 7"/>
+                                </svg>
+                            {% endif %}
+                            <span class="sr-only">
+                                {{ 'Desmarcar' if habito.concluido_hoje else 'Concluir' }} {{ habito.nome }}
+                            </span>
+                        </button>
+                    </form>
 
                 </li>
             {% endfor %}

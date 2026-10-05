@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% from "icones.html" import icone %}
+{% block titulo %}Progresso{% endblock %}
+
+{#
+  Aba "Progresso" (RF04 / US04 / US05).
+  Mostra a mesma informação da tela principal, mas organizada para
+  comparar os hábitos entre si - e sem botões de marcar, é só leitura.
+#}
+
+{% block conteudo %}
+
+    <header class="cabecalho">
+        <p class="cabecalho__data">{{ cabecalho.data_extenso }}</p>
+        <h1 class="cabecalho__saudacao">Progresso</h1>
+        <p class="sequencia">
+            <strong>{{ cabecalho.sequencia }}</strong>
+            {% if cabecalho.sequencia == 1 %}dia seguido{% else %}dias seguidos{% endif %}
+            com pelo menos um hábito concluído
+        </p>
+    </header>
+
+    {% if habitos %}
+
+        <section class="painel">
+            <h2 class="painel__titulo">Média da semana</h2>
+            <p class="painel__numero">{{ media }}%</p>
+            <p class="painel__nota">
+                considerando os {{ habitos|length }}
+                {% if habitos|length == 1 %}hábito cadastrado{% else %}hábitos cadastrados{% endif %}
+            </p>
+        </section>
+
+        <ul class="lista">
+            {% for habito in habitos %}
+                <li class="card card--progresso">
+
+                    <div class="card__icone">{{ icone(habito.icone, 22) }}</div>
+
+                    <div class="card__texto">
+                        <a class="card__nome" href="{{ url_for('historico', habito_id=habito.id) }}">
+                            {{ habito.nome }}
+                        </a>
+
+                        {# Barra de proporção: a largura é a própria porcentagem #}
+                        <div class="barra" title="{{ habito.porcentagem_semana }}% da semana">
+                            <div class="barra__preenchida" style="width: {{ habito.porcentagem_semana }}%"></div>
+                        </div>
+
+                        <p class="card__progresso">
+                            {{ habito.feitos_na_semana }}/7 dias — {{ habito.porcentagem_semana }}%
+                        </p>
+                    </div>
+
+                </li>
+            {% endfor %}
+        </ul>
+
+    {% else %}
+
+        <div class="vazio">
+            <p class="vazio__titulo">Nada para mostrar ainda</p>
+            <p class="vazio__texto">Cadastre um hábito na aba Hábitos para acompanhar seu progresso.</p>
+        </div>
+
+    {% endif %}
+
+{% endblock %}

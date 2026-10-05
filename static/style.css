@@ -1,20 +1,26 @@
 /* ============================================================
    Habit Tracker - estilos
    Paleta aprovada no protótipo:
-     fundo        #EEF2EA
-     verde        #2B4735
-     âmbar (hoje) #D98E3C
-     card         #FDFCF9
-     cinza perdido#C7CFC0
+     fundo         #EEF2EA
+     verde         #2B4735
+     âmbar (hoje)  #D98E3C
+     card          #FDFCF9
+     cinza perdido #C7CFC0
+
+   REGRA DA PALETA: o âmbar é EXCLUSIVO do indicador do dia atual.
+   Nenhum outro elemento da interface usa essa cor - nem botão, nem
+   foco de campo, nem aba ativa. É isso que faz o "hoje" saltar aos
+   olhos na tela.
    ============================================================ */
 
 :root {
     --fundo: #EEF2EA;
     --verde: #2B4735;
-    --ambar: #D98E3C;
+    --ambar: #D98E3C;       /* só no pontinho de hoje */
     --card: #FDFCF9;
     --cinza: #C7CFC0;
     --texto-suave: #6B7A6B;
+    --verde-escuro: #22392A;
 }
 
 * { box-sizing: border-box; }
@@ -26,35 +32,84 @@ body {
     font-family: "Work Sans", Arial, sans-serif;
 }
 
-/* container central, largura de "telinha de celular" no desktop */
+/* container central, largura de "telinha de celular" no desktop.
+   O padding de baixo abre espaço para a navegação fixa não cobrir
+   o último card da lista. */
 .tela {
     max-width: 520px;
     margin: 0 auto;
-    padding: 32px 20px 120px;
+    padding: 32px 20px 190px;   /* folga para a navegação e o botão "+" */
 }
 
 /* ---------- cabeçalho ---------- */
-.cabecalho { margin-bottom: 24px; }
+.cabecalho { margin-bottom: 22px; }
 
 .cabecalho__data {
     margin: 0 0 6px;
     font-size: 13px;
-    letter-spacing: .08em;
-    text-transform: uppercase;
+    letter-spacing: .06em;
+    text-transform: lowercase;
     color: var(--texto-suave);
 }
 
 .cabecalho__saudacao {
     margin: 0;
     font-family: "Fraunces", Georgia, serif;
-    font-size: 34px;
+    font-size: 32px;
     font-weight: 600;
+    line-height: 1.15;
 }
 
 .cabecalho__subtitulo {
     margin: 4px 0 0;
     color: var(--texto-suave);
     font-size: 15px;
+}
+
+.cabecalho__titulo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* ícone ao lado do título do histórico - usa a cor do card para o
+   círculo aparecer sobre o fundo da página */
+.cabecalho__icone {
+    flex: 0 0 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--card);
+    color: var(--verde);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cabecalho__perfil {
+    display: inline-block;
+    margin-top: 10px;
+    color: var(--texto-suave);
+    font-size: 14px;
+    text-decoration: none;
+    border-bottom: 1px solid var(--cinza);
+}
+.cabecalho__perfil:hover { color: var(--verde); border-color: var(--verde); }
+
+/* ---------- contador de sequência (streak) ---------- */
+.sequencia {
+    margin: 12px 0 0;
+    padding: 10px 14px;
+    background: var(--card);
+    border-radius: 12px;
+    font-size: 14px;
+    color: var(--texto-suave);
+    line-height: 1.4;
+}
+.sequencia strong {
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--verde);
 }
 
 .voltar {
@@ -76,7 +131,7 @@ body {
     font-size: 14px;
 }
 .aviso--sucesso { background: #DCE7DA; color: var(--verde); }
-.aviso--erro    { background: #F6E3CF; color: #8A5620; }
+.aviso--erro    { background: #F2E4D4; color: #7A5223; }
 
 /* ---------- lista de hábitos ---------- */
 .lista {
@@ -102,10 +157,8 @@ body {
     flex: 0 0 44px;
     height: 44px;
     border-radius: 50%;
-    background: var(--verde);
-    color: var(--card);
-    font-family: "Fraunces", Georgia, serif;
-    font-size: 20px;
+    background: var(--fundo);
+    color: var(--verde);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -138,7 +191,8 @@ body {
 }
 
 /* ---------- pontinhos da semana (US05) ---------- */
-.pontos { display: flex; gap: 8px; }
+.pontos { display: flex; gap: 8px; align-items: center; }
+.pontos__form { display: flex; margin: 0; }
 
 .ponto {
     width: 18px;
@@ -149,13 +203,22 @@ body {
     justify-content: center;
     font-size: 9px;
     font-style: normal;
+    padding: 0;
 }
 .ponto i { display: none; }              /* a letra só aparece no tamanho grande */
 
-.ponto--concluido { background: var(--verde); }
-.ponto--hoje      { background: var(--ambar); }
-.ponto--perdido   { background: var(--cinza); }
+.ponto--concluido { background: var(--verde); border: none; }
+.ponto--hoje      { background: var(--ambar); border: none; }   /* ÚNICO uso do âmbar */
+.ponto--perdido   { background: var(--cinza); border: none; }
 .ponto--futuro    { background: transparent; border: 1.5px dashed var(--cinza); }
+
+/* só o pontinho de hoje é botão; os outros são histórico, sem clique */
+.ponto--clicavel {
+    cursor: pointer;
+    transition: transform .1s ease;
+}
+.ponto--clicavel:hover  { transform: scale(1.25); }
+.ponto--clicavel:active { transform: scale(.95); }
 
 .pontos--grande { gap: 10px; margin: 6px 0 14px; }
 .pontos--grande .ponto {
@@ -177,11 +240,11 @@ body {
     border-radius: 10px;
     border: 2px solid var(--cinza);
     background: transparent;
+    color: var(--card);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
     padding: 0;
     transition: background .12s ease, border-color .12s ease;
 }
@@ -190,9 +253,8 @@ body {
 .checkbox--marcado {
     background: var(--verde);
     border-color: var(--verde);
-    color: var(--card);
-    cursor: default;
 }
+.checkbox--marcado:hover { background: var(--verde-escuro); }
 
 /* texto só para leitores de tela */
 .sr-only {
@@ -221,22 +283,58 @@ body {
 .botao-mais {
     position: fixed;
     right: calc(50% - 260px + 20px);
-    bottom: 28px;
-    width: 58px;
-    height: 58px;
+    bottom: 96px;                /* acima da navegação inferior */
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
     background: var(--verde);
     color: var(--card);
     font-size: 30px;
-    line-height: 54px;
+    line-height: 52px;
     text-align: center;
     text-decoration: none;
     box-shadow: 0 6px 16px rgba(43, 71, 53, .25);
 }
-.botao-mais:hover { background: #22392A; }
+.botao-mais:hover { background: var(--verde-escuro); }
 
 @media (max-width: 560px) {
     .botao-mais { right: 20px; }
+}
+
+/* ---------- navegação inferior ---------- */
+.rodape {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px calc(10px + env(safe-area-inset-bottom));
+    background: var(--card);
+    border-top: 1px solid var(--cinza);
+}
+
+.rodape__aba {
+    flex: 0 1 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    color: var(--texto-suave);
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+}
+.rodape__aba:hover { color: var(--verde); }
+
+/* aba ativa em verde - nunca âmbar, que é exclusivo do dia de hoje */
+.rodape__aba--ativa {
+    background: var(--fundo);
+    color: var(--verde);
+    font-weight: 600;
 }
 
 /* ---------- formulário ---------- */
@@ -247,11 +345,17 @@ body {
     box-shadow: 0 2px 8px rgba(43, 71, 53, .07);
 }
 
-.campo { display: block; margin-bottom: 18px; }
+.campo {
+    display: block;
+    margin: 0 0 18px;
+    padding: 0;
+    border: none;
+}
 
 .campo__rotulo {
     display: block;
     margin-bottom: 6px;
+    padding: 0;
     font-size: 13px;
     font-weight: 500;
     letter-spacing: .04em;
@@ -272,7 +376,58 @@ body {
 }
 .campo__entrada:focus {
     outline: none;
-    border-color: var(--ambar);
+    border-color: var(--verde);   /* verde, não âmbar */
+}
+
+/* ---------- escolha de ícone ---------- */
+.icones {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.icones__opcao { cursor: pointer; text-align: center; }
+
+/* o radio de verdade fica invisível, mas continua funcionando
+   (é ele que o navegador envia no formulário) */
+.icones__opcao input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.icones__caixa {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    border: 1.5px solid var(--cinza);
+    border-radius: 14px;
+    background: var(--fundo);
+    color: var(--texto-suave);
+    transition: border-color .12s ease, background .12s ease, color .12s ease;
+}
+.icones__opcao:hover .icones__caixa { border-color: var(--verde); }
+
+/* quando o radio está marcado, o quadradinho ao lado dele fica verde */
+.icones__opcao input:checked + .icones__caixa {
+    background: var(--verde);
+    border-color: var(--verde);
+    color: var(--card);
+}
+
+/* contorno visível para quem navega pelo teclado */
+.icones__opcao input:focus-visible + .icones__caixa {
+    outline: 2px solid var(--verde);
+    outline-offset: 2px;
+}
+
+.icones__rotulo {
+    display: block;
+    margin-top: 4px;
+    font-size: 11px;
+    color: var(--texto-suave);
 }
 
 .botao-principal {
@@ -287,9 +442,9 @@ body {
     font-weight: 500;
     cursor: pointer;
 }
-.botao-principal:hover { background: #22392A; }
+.botao-principal:hover { background: var(--verde-escuro); }
 
-/* ---------- painéis do histórico ---------- */
+/* ---------- painéis (progresso e histórico) ---------- */
 .painel {
     background: var(--card);
     border-radius: 18px;
@@ -314,6 +469,22 @@ body {
 }
 
 .painel__nota { margin: 6px 0 0; font-size: 13px; color: var(--texto-suave); }
+
+/* ---------- barra de porcentagem (aba Progresso) ---------- */
+.barra {
+    height: 8px;
+    margin-top: 10px;
+    border-radius: 99px;
+    background: var(--fundo);
+    overflow: hidden;
+}
+.barra__preenchida {
+    height: 100%;
+    border-radius: 99px;
+    background: var(--verde);
+}
+
+.card--progresso .card__nome { display: inline-block; margin-bottom: 2px; }
 
 .datas {
     list-style: none;

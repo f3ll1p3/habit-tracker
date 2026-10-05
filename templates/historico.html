@@ -1,16 +1,21 @@
 {% extends "base.html" %}
+{% from "icones.html" import icone %}
 {% block titulo %}Histórico de {{ habito.nome }}{% endblock %}
 
 {#
   Histórico de um hábito (RF04 / US04).
   A variável "habito" vem da rota historico() do app.py.
+  Aqui os pontinhos são só leitura, inclusive o de hoje.
 #}
 
 {% block conteudo %}
 
     <header class="cabecalho">
-        <a class="voltar" href="{{ url_for('index') }}">← Voltar</a>
-        <h1 class="cabecalho__saudacao">{{ habito.nome }}</h1>
+        <a class="voltar" href="{{ url_for('progresso') }}">← Voltar</a>
+        <div class="cabecalho__titulo">
+            <span class="cabecalho__icone">{{ icone(habito.icone, 22) }}</span>
+            <h1 class="cabecalho__saudacao">{{ habito.nome }}</h1>
+        </div>
         <p class="cabecalho__subtitulo">{{ habito.descricao }}</p>
     </header>
 

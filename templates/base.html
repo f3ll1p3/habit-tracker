@@ -2,6 +2,8 @@
 <!--
   base.html - "moldura" usada por todas as páginas.
   As outras telas escrevem só o miolo dentro do bloco "conteudo".
+  A navegação de baixo (Hábitos / Progresso) fica aqui, então aparece
+  igual em todas as telas sem precisar repetir o código.
 -->
 <html lang="pt-BR">
 <head>
@@ -34,5 +36,33 @@
         {% block conteudo %}{% endblock %}
 
     </main>
+
+    {#
+      Navegação inferior fixa, com duas abas.
+
+      "request.endpoint" é o nome da função da rota que está respondendo
+      agora (ex.: "index" ou "progresso"). Comparando com ele a gente
+      sabe qual aba destacar.
+    #}
+    <nav class="rodape">
+        <a class="rodape__aba {% if request.endpoint == 'index' %}rodape__aba--ativa{% endif %}"
+           href="{{ url_for('index') }}">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 6.5h5M4 12h5M4 17.5h5"/>
+                <path d="M13 6.5l2 2 4-4M13 17l2 2 4-4"/>
+            </svg>
+            <span>Hábitos</span>
+        </a>
+
+        <a class="rodape__aba {% if request.endpoint == 'progresso' %}rodape__aba--ativa{% endif %}"
+           href="{{ url_for('progresso') }}">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 20V12M12 20V5M19 20v-5"/>
+            </svg>
+            <span>Progresso</span>
+        </a>
+    </nav>
 </body>
 </html>

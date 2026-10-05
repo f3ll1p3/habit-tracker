@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block titulo %}Meu nome{% endblock %}
+
+{#
+  Tela de perfil - só o nome para a saudação.
+  NÃO é login: não tem senha e não protege nada.
+#}
+
+{% block conteudo %}
+
+    <header class="cabecalho">
+        <a class="voltar" href="{{ url_for('index') }}">← Voltar</a>
+        <h1 class="cabecalho__saudacao">Meu nome</h1>
+        <p class="cabecalho__subtitulo">Para o app te cumprimentar pelo nome.</p>
+    </header>
+
+    <form class="formulario" method="post" action="{{ url_for('perfil') }}">
+        <label class="campo">
+            <span class="campo__rotulo">Como posso te chamar?</span>
+            <input class="campo__entrada" type="text" name="nome"
+                   value="{{ nome }}" maxlength="40"
+                   placeholder="Ex.: Fellipe" required>
+        </label>
+
+        <button class="botao-principal" type="submit">Salvar</button>
+    </form>
+
+{% endblock %}

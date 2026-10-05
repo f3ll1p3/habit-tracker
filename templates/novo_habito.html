@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "icones.html" import icone %}
 {% block titulo %}Novo hábito{% endblock %}
 
 {#
@@ -29,6 +30,29 @@
                       maxlength="200"
                       placeholder="Ex.: 2 litros ao longo do dia" required>{{ descricao }}</textarea>
         </label>
+
+        {#
+          Escolha do ícone.
+
+          São <input type="radio"> de verdade, todos com name="icone": o
+          navegador garante que só um fique marcado e envia a chave escolhida
+          junto com o formulário. O input em si fica escondido pelo CSS; o que
+          aparece é o quadradinho com o desenho.
+        #}
+        <fieldset class="campo campo--icones">
+            <legend class="campo__rotulo">Ícone</legend>
+
+            <div class="icones">
+                {% for opcao in icones %}
+                    <label class="icones__opcao" title="{{ opcao.rotulo }}">
+                        <input type="radio" name="icone" value="{{ opcao.chave }}"
+                               {% if opcao.chave == icone_escolhido %}checked{% endif %}>
+                        <span class="icones__caixa">{{ icone(opcao.chave, 24) }}</span>
+                        <span class="icones__rotulo">{{ opcao.rotulo }}</span>
+                    </label>
+                {% endfor %}
+            </div>
+        </fieldset>
 
         <button class="botao-principal" type="submit">Salvar hábito</button>
     </form>

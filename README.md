@@ -70,20 +70,39 @@ static/style.css   identidade visual (paleta + tipografia do protótipo)
 
 | Método | Rota | O que faz | Requisito |
 |---|---|---|---|
-| GET | `/` | Lista os hábitos com os pontinhos da semana | RF02, RF04 |
+| GET | `/` | Aba Hábitos: saudação, sequência e lista com os pontinhos da semana | RF02, RF04 |
+| GET | `/progresso` | Aba Progresso: % da semana por hábito e média geral | RF04 |
+| GET/POST | `/perfil` | Guarda o nome usado na saudação (não é login) | — |
 | GET/POST | `/habitos/novo` | Mostra e processa o formulário de cadastro | RF01 |
 | POST | `/habitos/<id>/concluir` | Marca o hábito como concluído hoje | RF03, RN01, RN02 |
+| POST | `/habitos/<id>/desmarcar` | Desfaz a conclusão de hoje (só de hoje) | RF03 |
 | GET | `/habitos/<id>/historico` | Mostra o histórico e a constância do hábito | RF04 |
 
 ## Banco de dados
 
-**habitos** — `id SERIAL`, `nome TEXT`, `descricao TEXT`, `criado_em DATE`
+**habitos** — `id SERIAL`, `nome TEXT`, `descricao TEXT`, `icone TEXT`, `criado_em DATE`
 
 **conclusoes** — `id SERIAL`, `habito_id INTEGER`, `data DATE`, com `UNIQUE (habito_id, data)`
+
+**usuario** — `id INTEGER` (sempre 1), `nome TEXT` — só o nome da saudação
 
 A restrição `UNIQUE` é o que garante a **RN01**: o próprio banco recusa uma segunda
 conclusão do mesmo hábito no mesmo dia. A coluna `data` atende a **RN02** e é a base
 do histórico.
+
+## Interface
+
+Duas abas fixas no rodapé: **Hábitos** (marcar o dia) e **Progresso** (comparar
+os hábitos). A paleta segue o protótipo, e o âmbar `#D98E3C` é exclusivo do
+indicador do dia atual — nenhum outro elemento usa essa cor.
+
+Na fileira de 7 bolinhas, só a de **hoje** é clicável: um toque marca, outro
+desmarca. As bolinhas dos dias anteriores são apenas histórico, e a rota de
+desmarcar tem a data de hoje no `WHERE`, então é impossível apagar dias passados
+por ela.
+
+As datas do app usam o horário de Brasília (UTC−3), não o do servidor: a Vercel
+roda em UTC, e sem isso um hábito marcado depois das 21h cairia no dia seguinte.
 
 ## O que mudou do SQLite para o Postgres/Neon
 
